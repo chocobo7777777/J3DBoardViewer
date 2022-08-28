@@ -72,7 +72,7 @@ public class BoardViewer {
     }
 
     public BoardViewer() {
-        GLProfile glProfile = GLProfile.get("GL4bc");
+        GLProfile glProfile = GLProfile.get("GL3bc");
         GLCapabilities glCapabilities = new GLCapabilities(glProfile);
         glWindow = GLWindow.create(glCapabilities);
         glWindow.setSize(800,800);

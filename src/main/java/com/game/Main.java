@@ -19,7 +19,7 @@ import java.util.random.RandomGenerator;
 
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         int[][] board = {
                 {1,3,4,5},
                 {2,3,4,5},
@@ -29,5 +29,8 @@ public class Main {
 
         BoardViewer boardViewer = new BoardViewer();
         boardViewer.setBoard(board);
+
+        Thread.sleep(1000*10);
+        board[0][0] =2;
     }
 }
