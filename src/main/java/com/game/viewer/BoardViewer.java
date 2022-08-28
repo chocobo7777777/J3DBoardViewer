@@ -6,6 +6,11 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.Animator;
 
+import java.awt.Color;
+
+import java.awt.*;
+import java.util.HashMap;
+
 public class BoardViewer {
     GLWindow glWindow;
     GLU glu = null;
@@ -13,10 +18,36 @@ public class BoardViewer {
     int[][] board=null;
     int maxX=0;
     int maxY=0;
+    public final static byte[] blackUB = new byte[]{0,0,0};
+    public static HashMap<Color, byte[]> colorHashMap =new HashMap();
+    public static HashMap<Integer, Color> colorMap =new HashMap();
+    static {
+        colorMap.put(1,Color.white);
+        colorMap.put(2,Color.blue);
+        colorMap.put(3,Color.red);
+        colorMap.put(4,Color.green);
+        colorMap.put(5,Color.yellow);
+        initColorMap(colorMap);
+    }
+
+    public static void initColorMap(HashMap<Integer, Color> colorMap) {
+        colorHashMap.clear();
+        for (Color color: colorMap.values()) {
+            byte[] colorUB = new byte[3];
+            colorUB[0] = (byte) color.getRed();
+            colorUB[1] = (byte) color.getGreen();
+            colorUB[2] = (byte) color.getBlue();
+            colorHashMap.put(color,colorUB);
+        }
+
+    }
+
 
     public int[][] getBoard() {
         return board;
     }
+
+
 
     public void setBoard(int[][] board) {
         this.board = board;
@@ -92,22 +123,28 @@ public class BoardViewer {
         gl.glMatrixMode(GL2.GL_MODELVIEW);
 
         gl.glLoadIdentity();
-        glu.gluOrtho2D(0, 20, 0 ,20);
+        glu.gluOrtho2D(0, maxX, 0 ,maxY);
 
-
-        drawCube(gl);
-//        for (int i=0;i <maxY; i++) {
-//            for (int j=0; j <maxX ;j++) {
-//                gl.glTranslatef(j,0,i);
-//                drawCube(gl);
-//
-//            }
-//        }
+        for (int i=0;i <maxY; i++) {
+            for (int j=0; j <maxX ;j++) {
+                gl.glPushMatrix();
+                gl.glTranslatef(j,i,0);
+                drawCube(gl, board[j][i]);
+                gl.glPopMatrix();
+            }
+        }
     }
 
-    public void drawCube(GL3bc gl) {
+    public void drawCube(GL3bc gl, int value) {
         gl.glBegin(gl.GL_QUADS);
-        gl.glColor3ub((byte) 0x80, (byte) 0x40, (byte) 0x0);
+        Color color = colorMap.get(value);
+        byte[] cub=null;
+        if (color !=null) {
+             cub = colorHashMap.get(color);
+        } else {
+            cub = blackUB;
+        }
+        gl.glColor3ub(cub[0] , cub[1], cub[2]);
         gl.glVertex2f(0.1f, 0.1f);
         gl.glVertex2f(0.9f, 0.1f);
         gl.glVertex2f(0.9f, 0.9f);
